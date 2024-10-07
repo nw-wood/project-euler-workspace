@@ -3,5 +3,12 @@
 version = 3
 
 [[package]]
-name = "project-euler-workspace"
+name = "project-main"
+version = "0.1.0"
+dependencies = [
+ "project_euler_tests_1_100",
+]
+
+[[package]]
+name = "project_euler_tests_1_100"
 version = "0.1.0"

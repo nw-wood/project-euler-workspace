@@ -1,0 +1,17 @@
+[package]
+name = "project-main"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+
+    # ex: from rust workspace examples of member dependency spec
+
+    #_7_packages_crates_and_modules              = { path = "../_7_packages_crates_and_modules" }
+    #_8_common_collections                       = { path = "../_8_common_collections" }
+    #_9_error_handling                           = { path = "../_9_error_handling" }
+
+    #"project_main"
+    
+    project_euler_tests_1_100       = { path = "../project_euler_tests_1_100" }

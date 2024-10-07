@@ -1,0 +1,6 @@
+[package]
+name = "project_euler_tests_1_100"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
