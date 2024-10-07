@@ -13,3 +13,5 @@ I'd like to work on my skills in both math and software engineering.
     resource for leveling up. 
 
 You can check it out at https://projecteuler.net/.
+
+![wink](/wink.ping?raw=true "wink")
