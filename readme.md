@@ -14,4 +14,4 @@ I'd like to work on my skills in both math and software engineering.
 
 You can check it out at https://projecteuler.net/.
 
-![wink](/wink.ping?raw=true "wink")
+![wink](/wink.png?raw=true "wink")
