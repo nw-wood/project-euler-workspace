@@ -3,6 +3,41 @@ mod project_euler_tests_1_100 {
 
     //========================================================================
     #[test]
+    fn problem_5_smallest_multiple() {
+
+        use std::error::Error;
+        use std::fmt::Debug;
+        use std::fmt;
+
+        struct GcdError(String);
+        impl Error for GcdError {}  //Specify GcdError shares behavior of the Error trait 
+        impl Debug for GcdError {   //Since Error requires Debug, implement
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                f.debug_tuple("GcdError").field(&self.0).finish()
+            }
+        }
+
+        impl fmt::Display for GcdError {    //Since Error requires Display, implement
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "GCD Error: {}", self.0)
+            }
+        }
+
+        fn gcd(input: Vec<u64>) -> Result<u64, GcdError> {
+            if input.len() < 2 {
+                return Err(GcdError("provide at least 2 inputs".to_string()));
+            }
+            Ok(1)
+            //ex:   gcd(48, 18)
+            //      gcd(18, 48 % 18)    = gcd(18, 12)
+            //      gcd(12, 18 % 12)    = gcd(12, 6)
+            //      gcd(6, 12 % 6)      = gcd(6, 0)
+        }
+
+    }
+    
+    //========================================================================
+    #[test]
     fn problem_4_largest_palindrome_product() {
         let mut largest: usize = 0;
         for a in (100..1000).rev() {
