@@ -17,6 +17,21 @@ mod project_euler_tests_1_50 {
     use super::*;
     //========================================================================
     #[test]
+    fn problem_6_sum_square_difference() {
+        let mut sum_of_squares = 0;
+        let mut square_of_sums = 0;
+        for i in 1..100 + 1 {
+            sum_of_squares += i * i;
+            square_of_sums += i;
+        }
+        square_of_sums *= square_of_sums;
+        let result = square_of_sums - sum_of_squares;
+        println!("result: {result}");
+        assert_eq!(result, 25164150);
+    }
+
+    //========================================================================
+    #[test]
     fn problem_5_smallest_multiple() {
 
         fn gcd(mut input: Vec<i64>) -> Result<i64, _EulerError> {

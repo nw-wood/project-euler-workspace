@@ -14,4 +14,4 @@ edition = "2021"
 
     #"project_main"
     
-    project_euler_tests_1_100       = { path = "../project_euler_tests_1_50" }
+    project_euler_tests_1_50       = { path = "../project_euler_tests_1_50" }
