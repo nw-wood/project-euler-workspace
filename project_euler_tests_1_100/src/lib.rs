@@ -9,30 +9,49 @@ mod project_euler_tests_1_100 {
         use std::fmt::Debug;
         use std::fmt;
 
+        #[derive(Debug)]
         struct GcdError(String);
-        impl Error for GcdError {}  //Specify GcdError shares behavior of the Error trait 
-        impl Debug for GcdError {   //Since Error requires Debug, implement
-            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                f.debug_tuple("GcdError").field(&self.0).finish()
-            }
-        }
-
-        impl fmt::Display for GcdError {    //Since Error requires Display, implement
+        impl Error for GcdError {}
+        impl fmt::Display for GcdError {
             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 write!(f, "GCD Error: {}", self.0)
             }
         }
 
-        fn gcd(input: Vec<u64>) -> Result<u64, GcdError> {
-            if input.len() < 2 {
-                return Err(GcdError("provide at least 2 inputs".to_string()));
+        fn gcd(mut input: Vec<i64>) -> Result<i64, GcdError> {
+
+            if input.len() == 0 { return Err(GcdError("provide at least 1 input".to_string())); }
+            if input.len() == 1 { return Ok(input[0]); }
+
+            input.sort();
+            input.dedup();
+
+            let mut a = input.pop().unwrap().abs();
+            let mut b = input.pop().unwrap().abs();
+
+            if !input.is_empty() { input.retain(|value| a % value != 0 || b % value != 0); }
+
+            while a != 0 && b != 0 {
+                if a > b {
+                    a = a % b;
+                } else {
+                    b = b % a;
+                }
             }
-            Ok(1)
-            //ex:   gcd(48, 18)
-            //      gcd(18, 48 % 18)    = gcd(18, 12)
-            //      gcd(12, 18 % 12)    = gcd(12, 6)
-            //      gcd(6, 12 % 6)      = gcd(6, 0)
+
+            if a != 0 { input.push(a); }
+            else { input.push(b) }
+
+            if input.len() > 1 { return gcd(input); }
+            else {
+                return Ok(input[0]);
+            }
         }
+
+        let result = gcd(vec![18, 48]).expect("should have been 6");
+        println!("gcd func returned: {result}");
+
+        assert_eq!(0,1); //still unsolved
 
     }
     
