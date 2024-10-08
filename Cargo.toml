@@ -3,6 +3,6 @@
 resolver = "2"
 
 members = [
-    "project_euler_tests_1_100",
+    "project_euler_tests_1_50",
     "project_main"
 ]

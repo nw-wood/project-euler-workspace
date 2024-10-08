@@ -1,26 +1,27 @@
-#[cfg(test)]
-mod project_euler_tests_1_100 {
+use std::error::Error;
+use std::fmt::Debug;
+use std::fmt;
 
+#[derive(Debug)]
+struct _EulerError(String);
+impl Error for _EulerError {}
+impl fmt::Display for _EulerError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Euler Error: {}", self.0)
+    }
+}
+
+#[cfg(test)]
+mod project_euler_tests_1_50 {
+
+    use super::*;
     //========================================================================
     #[test]
     fn problem_5_smallest_multiple() {
 
-        use std::error::Error;
-        use std::fmt::Debug;
-        use std::fmt;
+        fn gcd(mut input: Vec<i64>) -> Result<i64, _EulerError> {
 
-        #[derive(Debug)]
-        struct GcdError(String);
-        impl Error for GcdError {}
-        impl fmt::Display for GcdError {
-            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                write!(f, "GCD Error: {}", self.0)
-            }
-        }
-
-        fn gcd(mut input: Vec<i64>) -> Result<i64, GcdError> {
-
-            if input.len() == 0 { return Err(GcdError("provide at least 1 input".to_string())); }
+            if input.len() == 0 { return Err(_EulerError("provide at least 1 input".to_string())); }
             if input.len() == 1 { return Ok(input[0]); }
 
             input.sort();
@@ -48,10 +49,37 @@ mod project_euler_tests_1_100 {
             }
         }
 
-        let result = gcd(vec![18, 48]).expect("should have been 6");
-        println!("gcd func returned: {result}");
+        fn lcm(mut input: Vec<i64>) -> Result<i64, _EulerError> {
+            //lcm(a, b) = |ab|/gcd(a,b)
+            if input.len() < 2 {
+                return Err(_EulerError("provide at least 2 numbers to find the least common multiple of".to_string()));
+            }
 
-        assert_eq!(0,1); //still unsolved
+            input.sort();
+            input.dedup();
+            input.retain(|item| *item != 0);
+
+            let mut least = input.pop().unwrap().abs();
+
+            while !input.is_empty() {
+
+                let next = input.pop().unwrap().abs();
+
+                match gcd(vec![least, next]) {
+
+                    Ok(result) => {
+                        least = least * next / result;
+
+                    },
+                    Err(e) => return Err(e),
+                }
+            }
+
+            Ok(least)
+
+        }
+
+        assert_eq!(lcm(vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]).unwrap(), 232792560);
 
     }
     
