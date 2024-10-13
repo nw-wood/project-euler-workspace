@@ -2,6 +2,8 @@ use std::error::Error;
 use std::fmt::Debug;
 use std::fmt;
 
+//should leave my notes in here or seperate them out into a workspace thing or something
+
 #[derive(Debug)]
 struct _EulerError(String);
 impl Error for _EulerError {}
@@ -13,11 +15,45 @@ impl fmt::Display for _EulerError {
 
 #[cfg(test)]//STOP CLICKING THIS TEST
 mod project_euler_tests_1_50 {
-
     use super::*;
+
+    #[test]
+    fn problem_9_special_pythagorean_triplet() {
+        //brute force: .40s after breaks
+        // for c in 1..499 as usize {
+        //     for b in 1..499 as usize {
+        //         if b >= c { break; }
+        //         for a in 1..499 as usize {
+        //             if a >=  b { break; }
+        //             if a.pow(2) + b.pow(2) == c.pow(2) && a + b + c == 1000 {
+        //                 println!("answer: {}", a * b * c);
+        //             }
+        //         }
+        //     }
+        // }
+
+        //using euclid's formula, a = m^2-n^2, b = 2mn, c = m^2 + n^2
+        //solves in 0.00s
+        let mut d: Vec<usize> = vec![];
+        for n in 2..=1000 / 2 {
+            if 1000 % n == 0 {
+                d.push(n);
+            }
+        }
+        for m in &d{
+            for n in &d {
+                if m < n { break; }
+                let (a, b, c) = (m.pow(2) - n.pow(2), 2 * m * n, m.pow(2) + n.pow(2));
+                if a + b + c == 1000 {
+                    println!("{}", a * b * c);
+                }
+            }
+        }
+    }
     //========================================================================
     #[test]
     fn problem_8_largest_product_in_a_series() {
+        //there is a .window method for vectors that will make an efficient iterator out of all of this for a significant performance increase
         let full_series = String::from("7316717653133062491922511967442657474235534919493496983520312774506326239578318016984801869478851843858615607891129494954595017379583319528532088055111254069874715852386305071569329096329522744304355766896648950445244523161731856403098711121722383113622298934233803081353362766142828064444866452387493035890729629049156044077239071381051585930796086670172427121883998797908792274921901699720888093776657273330010533678812202354218097512545405947522435258490771167055601360483958644670632441572215539753697817977846174064955149290862569321978468622482839722413756570560574902614079729686524145351004748216637048440319989000889524345065854122758866688116427171479924442928230863465674813919123162824586178664583591245665294765456828489128831426076900422421902267105562632111110937054421750694165896040807198403850962455444362981230987879927244284909188845801561660979191338754992005240636899125607176060588611646710940507754100225698315520005593572972571636269561882670428252483600823257530420752963450");
         let mut series_list: Vec<&str> = vec![];
         let mut products: Vec<usize> = vec![];
