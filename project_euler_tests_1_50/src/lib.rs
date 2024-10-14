@@ -15,8 +15,114 @@ impl fmt::Display for _EulerError {
 
 #[cfg(test)]//STOP CLICKING THIS TEST
 mod project_euler_tests_1_50 {
+    use std::iter::{self, Rev};
+
     use super::*;
 
+    //==========================================================================================================
+    #[test]
+    fn problem_13_large_sum() {
+        use std::fs::File;
+        use std::io::{self, BufRead};
+        let file = File::open("./big_nums.txt").unwrap();
+        let reader = io::BufReader::new(file);
+        let mut str_list: Vec<String> = vec![];
+        for line in reader.lines() {
+            let line = line.unwrap();
+            str_list.push(line);
+        }
+        let mut carry: usize = 0;
+        let mut big_sum: String = String::new();
+        for digit in (0..50).rev() {
+            let mut sum: usize = 0;
+            for big_num in &str_list {
+                let digit: usize = big_num[digit..digit+1].parse().unwrap();
+                sum += digit;
+            }
+            sum += carry;
+            let place = sum % 10;
+            carry = sum / 10;
+            big_sum = format!("{}{}", place, big_sum);
+        }
+        big_sum = format!("{}{}", carry, big_sum);
+        println!("answer: {}", &big_sum[0..10]);
+    }
+    //=========================//=========================//=========================//=========================
+    #[test]
+    fn problem_12_triangle_number_with_500_divisors() {
+        let mut n: usize = 1;
+        let mut next: usize = 1;
+        loop {
+            next += 1;
+            n += next;
+            let mut divisors: Vec<usize> = vec![1];
+            for i in 2..(n as f64).sqrt().floor() as usize {
+                if n % i == 0 {
+                    divisors.push(i);
+                    if i != n / i { //remember to add division result to divisors list!
+                        divisors.push(n / i);
+                    }
+                }
+            }
+            if divisors.len() > 500  {
+                println!("answer: {n}");
+                break;
+            }
+        }
+    }
+
+    //=========================//=========================//=========================//=========================
+    #[test]
+    fn problem_11_largest_product_in_grid() {
+        let grid: Vec<usize> = vec![8, 2, 22, 97, 38, 15, 0, 40, 0, 75, 4, 5, 7, 78, 52, 12, 50, 77, 91, 8, 49, 49, 99, 40, 17, 81, 18, 57, 60, 87, 17, 40, 98, 43, 69, 48, 4, 56, 62, 0, 81, 49, 31, 73, 55, 79, 14, 29, 93, 71, 40, 67, 53, 88, 30, 3, 49, 13, 36, 65, 52, 70, 95, 23, 4, 60, 11, 42, 69, 24, 68, 56, 1, 32, 56, 71, 37, 2, 36, 91, 22, 31, 16, 71, 51, 67, 63, 89, 41, 92, 36, 54, 22, 40, 40, 28, 66, 33, 13, 80, 24, 47, 32, 60, 99, 3, 45, 2, 44, 75, 33, 53, 78, 36, 84, 20, 35, 17, 12, 50, 32, 98, 81, 28, 64, 23, 67, 10, 26, 38, 40, 67, 59, 54, 70, 66, 18, 38, 64, 70, 67, 26, 20, 68, 2, 62, 12, 20, 95, 63, 94, 39, 63, 8, 40, 91, 66, 49, 94, 21, 24, 55, 58, 5, 66, 73, 99, 26, 97, 17, 78, 78, 96, 83, 14, 88, 34, 89, 63, 72, 21, 36, 23, 9, 75, 0, 76, 44, 20, 45, 35, 14, 0, 61, 33, 97, 34, 31, 33, 95, 78, 17, 53, 28, 22, 75, 31, 67, 15, 94, 3, 80, 4, 62, 16, 14, 9, 53, 56, 92, 16, 39, 5, 42, 96, 35, 31, 47, 55, 58, 88, 24, 0, 17, 54, 24, 36, 29, 85, 57, 86, 56, 0, 48, 35, 71, 89, 7, 5, 44, 44, 37, 44, 60, 21, 58, 51, 54, 17, 58, 19, 80, 81, 68, 5, 94, 47, 69, 28, 73, 92, 13, 86, 52, 17, 77, 4, 89, 55, 40, 4, 52, 8, 83, 97, 35, 99, 16, 7, 97, 57, 32, 16, 26, 26, 79, 33, 27, 98, 66, 88, 36, 68, 87, 57, 62, 20, 72, 3, 46, 33, 67, 46, 55, 12, 32, 63, 93, 53, 69, 4, 42, 16, 73, 38, 25, 39, 11, 24, 94, 72, 18, 8, 46, 29, 32, 40, 62, 76, 36, 20, 69, 36, 41, 72, 30, 23, 88, 34, 62, 99, 69, 82, 67, 59, 85, 74, 4, 36, 16, 20, 73, 35, 29, 78, 31, 90, 1, 74, 31, 49, 71, 48, 86, 81, 16, 23, 57, 5, 54, 1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52, 1, 89, 19, 67, 48];
+        let grid_rows: Vec<Vec<usize>> = grid.chunks(20).map(|chunk| chunk.to_vec()).collect();
+        let mut largest: usize = 0;
+        for (row_index, row) in grid_rows.iter().enumerate() {
+            for (index, value) in row.iter().enumerate() {
+                let (mut right, mut down, mut diag_right, mut diag_left) = (* value, * value, * value, * value);
+                for i in 1..=3 {
+                    if let Some(n) = row.get(index + i) { right *= n; }
+                    if let Some(offset_row) = grid_rows.get(row_index + i) {
+                        if let Some(n) = offset_row.get(index) { down *= n; }
+                    }
+                    if let Some(offset_row) = grid_rows.get(row_index + i) {
+                        if let Some(n) = offset_row.get(index + i) { diag_right *= n; }
+                    }
+                    if let Some(offset_row) = grid_rows.get(row_index + i) {
+                        if let Some(checked) = index.checked_sub(i) {
+                            if let Some(n) = offset_row.get(checked) { diag_left *= n; }
+                        }
+                    }
+                }
+                if right > largest { largest = right; }
+                if down > largest { largest = down; }
+                if diag_right > largest { largest = diag_right; }
+                if diag_left > largest { largest = diag_left; }
+            }
+        }
+        println!("answer: {largest}");
+    }
+    #[test]
+    fn problem_10_sum_first_2m_primes() {
+        let mut n: usize = 3;
+        let mut primes: Vec<usize> = vec![2];
+        let mut sum: usize = 2;
+        loop {
+            let sqrt_of_n = (n as f64).sqrt().floor() as usize;
+            for prime in &primes {
+                if n % prime == 0 {
+                    break;
+                } else if *prime > sqrt_of_n  {
+                    primes.push(n);
+                    sum += n;
+                    break;
+                }
+            }
+            n += 2;
+            if n > 2000000 { break; }
+        }
+        println!("answer: {sum}");
+    }
     #[test]
     fn problem_9_special_pythagorean_triplet() {
         //brute force: .40s after breaks
