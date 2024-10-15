@@ -1,5 +1,154 @@
 #[cfg(test)]
 mod project_euler_tests_1_50 {
+    #[test]
+    fn problem_18_max_path_sum() {
+let triangle: Vec<usize> = vec![      75,
+                                    95, 64, 
+                                  17, 47, 82,
+                                18, 35, 87, 10,
+                              20, 04, 82, 47, 65,
+                            19, 01, 23, 75, 03, 34,
+                          88, 02, 77, 73, 07, 63, 67,
+                        99, 65, 04, 28, 06, 16, 70, 92,
+                      41, 41, 26, 56, 83, 40, 80, 70, 33,
+                    41, 48, 72, 33, 47, 32, 37, 16, 94, 29,
+                  53, 71, 44, 65, 25, 43, 91, 52, 97, 51, 14,
+                70, 11, 33, 28, 77, 73, 17, 78, 39, 68, 17, 57,
+              91, 71, 52, 38, 17, 14, 91, 43, 58, 50, 27, 29, 48,
+           63, 66, 04, 68, 89, 53, 67, 30, 73, 16, 69, 87, 40, 31,
+        04, 62, 98, 27, 23, 09, 70, 98, 73, 93, 38, 53, 60, 04, 23];
+        let mut average: usize = 0;
+        let mut sum: usize = 0;
+        for item in &triangle {
+            sum += item;
+        }
+        average = sum / triangle.len();
+        println!("average: {average}");
+        //maybe break the triangle down into smaller ones and pick the highest paths within the smaller triangles
+        //so given a resolution for the smaller triangle it can pick 4-5 items that it knows has the highest path value and going with that
+        //this way the entire triangle doesn't need to be worked out, but the running average of choicest stays really high
+        //maybe do this for every step instead of for a set path of steps so
+        //figure out out how to pick a point, move down five rows, get the highest path, move 1 in that direction
+
+    }
+
+
+    #[test]
+    fn problem_17_number_letter_counts() {
+        fn ones_to_word(input: i64) -> String {
+            if input == 1 { "one".to_string() }
+            else if input == 2 { "two".to_string() }
+            else if input == 3 { "three".to_string() }
+            else if input == 4 { "four".to_string() }
+            else if input == 5 { "five".to_string() }
+            else if input == 6 { "six".to_string() }
+            else if input == 7 { "seven".to_string() }
+            else if input == 8 { "eight".to_string() }
+            else if input == 9 { "nine".to_string() }
+            else { "".to_string() }
+        }
+        fn tens_to_word(input: i64) -> String {
+            if input == 1 { "ten".to_string() }
+            else if input == 2 { "twenty".to_string() }
+            else if input == 3 { "thirty".to_string() }
+            else if input == 4 { "forty".to_string() }
+            else if input == 5 { "fifty".to_string() }
+            else if input == 6 { "sixty".to_string() }
+            else if input == 7 { "seventy".to_string() }
+            else if input == 8 { "eighty".to_string() }
+            else if input == 9 { "ninety".to_string() }
+            else { "".to_string() }
+        }
+        fn hundreds_to_word(input: i64, and_a: i64, and_b: i64) -> String {
+            if input != 0 {
+                let one = ones_to_word(input);
+                if and_a > 0 || and_b > 0 { one + "hundredand" }
+                else { one + "hundred" }
+            } else { "".to_string() }
+        }
+        fn thousands_to_word(input: i64) -> String {
+            if input != 0 {
+                let one = ones_to_word(input);
+                one + "thousand"
+            } else { "".to_string() }
+        }
+        let mut stack: String = String::new();
+        for i in 1..=1000 {
+            let ones = i % 10;
+            let tens = (i /10) % 10;
+            let hundreds = (i / 100) % 10;
+            let thousands = (i / 1000) % 10;
+            let mut teens = format!("{}{}", tens_to_word(tens), ones_to_word(ones));
+            if teens == "tenone".to_string() { teens = "eleven".to_string() }
+            else if teens == "tentwo".to_string() { teens = "twelve".to_string() }
+            else if teens == "tenthree".to_string() { teens = "thirteen".to_string() }
+            else if teens == "tenfour".to_string() { teens = "fourteen".to_string() }
+            else if teens == "tenfive".to_string() { teens = "fifteen".to_string() }
+            else if teens == "tensix".to_string() { teens = "sixteen".to_string() }
+            else if teens == "tenseven".to_string() { teens = "seventeen".to_string() }
+            else if teens == "teneight".to_string() { teens = "eighteen".to_string() }
+            else if teens == "tennine".to_string() { teens = "nineteen".to_string() }
+            stack = format!("{}{}{}{}", stack, thousands_to_word(thousands), hundreds_to_word(hundreds, tens, ones), teens);
+        }
+        println!("{}", stack.len());
+    }
+
+
+
+    #[test]
+    fn problem_16_power_digit_sum() {
+        use num_bigint::BigUint;
+        let tpot = BigUint::new(vec![2]).pow(1000);
+        let vpot = tpot.to_radix_be(10);
+        let mut sum: u64 = 0;
+        for n in vpot {
+            sum += n as u64;
+        }
+        println!("answer: {sum}");
+    }
+
+
+
+    #[test]
+    fn problem_15_lattice_paths() {
+        use num_bigint::BigUint;
+        fn factorial(input: usize) -> BigUint {
+            let mut product: BigUint = BigUint::new(vec![1]);
+            for n in 2..=input {
+                product *= n;
+            }
+            product
+        }
+        let result = factorial(40) / (factorial(20) * factorial(20));
+        println!("answer: {result}");
+    }
+
+
+
+    #[test]
+    fn problem_14_longest_collatz_sequence() {
+        let one_million: usize = 1_000_000;
+        let mut longest_sequence: usize = 0;
+        let mut longest_number: usize = 0;
+        for i in (0..one_million).rev() {
+            let mut n = i;
+            let mut sequence_length: usize = 0;
+            while n > 1 {
+                if n % 2 == 0 {
+                    n /= 2;
+                } else {
+                    n = 3 * n + 1;
+                }
+                sequence_length += 1;
+            }
+            if sequence_length > longest_sequence {
+                longest_sequence = sequence_length;
+                longest_number = i;
+            }
+        }
+        println!("answer: {longest_number} with sequence length {longest_sequence}");
+    }
+
 
 
     #[test]
