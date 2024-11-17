@@ -2,33 +2,83 @@
 mod project_euler_tests_1_50 {
     #[test]
     fn problem_18_max_path_sum() {
-let triangle: Vec<usize> = vec![      75,
-                                    95, 64, 
-                                  17, 47, 82,
-                                18, 35, 87, 10,
-                              20, 04, 82, 47, 65,
-                            19, 01, 23, 75, 03, 34,
-                          88, 02, 77, 73, 07, 63, 67,
-                        99, 65, 04, 28, 06, 16, 70, 92,
-                      41, 41, 26, 56, 83, 40, 80, 70, 33,
-                    41, 48, 72, 33, 47, 32, 37, 16, 94, 29,
-                  53, 71, 44, 65, 25, 43, 91, 52, 97, 51, 14,
-                70, 11, 33, 28, 77, 73, 17, 78, 39, 68, 17, 57,
-              91, 71, 52, 38, 17, 14, 91, 43, 58, 50, 27, 29, 48,
-           63, 66, 04, 68, 89, 53, 67, 30, 73, 16, 69, 87, 40, 31,
-        04, 62, 98, 27, 23, 09, 70, 98, 73, 93, 38, 53, 60, 04, 23];
-        let mut average: usize = 0;
-        let mut sum: usize = 0;
-        for item in &triangle {
-            sum += item;
+
+        // starting from the top of the triangle and moving to adjacent numbers on the row below
+        //  ... find the maximum total possible
+        //      ... well, thinking about this last I remembered thinking was to try starting from the bottom
+        //          ... but this probably doesn't matter
+        //              ... I thought taking the highest of the next few rows, but this is an approximation not a solution
+        //                  ... so I've thought about this one a while and was stumped - let's see the answer and study it
+
+        //                  ... so I was on the right track - this is a recursive binary tree searching algorithm
+        //                  ... additionally by going from bottom to top paths are eliminated instead of added
+        //                  ... the complexity of moving from top to bottom and calculating is (2^n), since for each iter
+        //                  ... creates another branch of recursion that must in and of itself be entirely calculated
+        //                      ... however by going from bottom to top we remove possible branches from calculating
+        //                          ... this leaves complexity at O(2n-2)... because... for each iter we iter again only
+        //                              ... twice n minus 2 instead of exponentially ... hrm ...
+        //                                  ... keep reading algo book so I have a better grasp of this
+        //                                      ... now write the function without peeking but having a basic idea!
+        
+        let triangle: Vec<usize> = vec![      75, // 0 - 1
+                                            95, 64, // 2 - 4
+                                          17, 47, 82, // 5 - 8
+                                        18, 35, 87, 10,
+                                      20, 04, 82, 47, 65,
+                                    19, 01, 23, 75, 03, 34,
+                                  88, 02, 77, 73, 07, 63, 67,
+                                99, 65, 04, 28, 06, 16, 70, 92,
+                              41, 41, 26, 56, 83, 40, 80, 70, 33,
+                            41, 48, 72, 33, 47, 32, 37, 16, 94, 29,
+                          53, 71, 44, 65, 25, 43, 91, 52, 97, 51, 14,
+                        70, 11, 33, 28, 77, 73, 17, 78, 39, 68, 17, 57,
+                      91, 71, 52, 38, 17, 14, 91, 43, 58, 50, 27, 29, 48,
+                    63, 66, 04, 68, 89, 53, 67, 30, 73, 16, 69, 87, 40, 31,
+                  04, 62, 98, 27, 23, 09, 70, 98, 73, 93, 38, 53, 60, 04, 23];
+        
+        let mut rows = {
+            let mut i = 0;
+            let mut sum = 0;
+            while sum < triangle.len() {
+                i += 1;
+                sum += i;
+            }
+            i
+        };
+
+        /* very fun, but also not what we're trying to do
+        while rows > 0 {
+            let mut index = 0;
+            for i in 0..rows {
+                index += i;
+            }
+            println!("{:?}", triangle[index..index + rows].to_vec());
+            rows -= 1;
+        }*/
+        // we need a function that passes some result of the function back into itself recursively until it reaches the 0th row
+
+        // it's going to need the row starting with, and we know thats index..index+rows
+        let mut starting_index = 0;
+            for i in 0..rows {
+                starting_index += i;
+            }
+        let starting_row = triangle[starting_index..starting_index+rows].to_vec();
+        //so for our iterative function...
+        //  ...we should pass it some of these values!
+        //      ...rows is probably helpful to figure if we're done recursing or not
+
+        // going to need a vector to store all the sums into
+        let mut path_sums: Vec<usize> = vec![];
+        fn recurse_rows(rows: usize) {
         }
-        average = sum / triangle.len();
-        println!("average: {average}");
-        //maybe break the triangle down into smaller ones and pick the highest paths within the smaller triangles
-        //so given a resolution for the smaller triangle it can pick 4-5 items that it knows has the highest path value and going with that
-        //this way the entire triangle doesn't need to be worked out, but the running average of choicest stays really high
-        //maybe do this for every step instead of for a set path of steps so
-        //figure out out how to pick a point, move down five rows, get the highest path, move 1 in that direction
+
+        //largest sum of paths iteration (can probably implement this into a branch of recurse_rows, but this is fine)
+        let mut largest = 0;
+        for sum in path_sums {
+            if sum > largest { largest = sum; }
+        }
+
+
 
     }
 
