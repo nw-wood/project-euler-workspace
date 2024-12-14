@@ -1,6 +1,36 @@
 #[cfg(test)]
 mod project_euler_tests_1_50 {
     #[test]
+    fn problem_19_counting_sundays() {
+
+        let mut day = 2; //0 sunday, 1 monday, 2 tuesday, jan 1 1901 is a tuesday
+        let mut sundays = 0;
+
+        for year in 1901..=2000 {
+            for month in 1..=12 {
+                if day == 0 {
+                    sundays += 1;
+                }
+                day = (day + {
+                    match month {
+                        1 | 3 | 5 | 7 | 8 | 10 | 12 => 31,
+                        4 | 6 | 9 | 11 => 30,
+                        2 => {
+                            if (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0) {
+                                29
+                            } else {
+                                28
+                            }
+                        },
+                        _ => 0,
+                    }
+                }) % 7; //day = (day + days in that month) % 7, each time day is 0 increase sunday count since that indicates the starting day is sunday
+            }
+        }
+        println!("sundays: {}", sundays);
+    }
+
+    #[test]
     fn problem_18_max_path_sum() {
 
         let mut triangle = vec![
