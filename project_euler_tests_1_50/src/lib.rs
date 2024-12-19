@@ -1,5 +1,44 @@
 #[cfg(test)]
 mod project_euler_tests_1_50 {
+
+    #[test]
+    fn problem_22_names_scores() {
+        use std::collections::HashMap;
+        use std::fs::File;
+        use std::io::{self, BufRead};
+
+        // hashmap of (letters, values)
+        let letter_map: HashMap<char, usize> = ('A'..='Z')
+            .enumerate()
+            .map(|(index, letter)| (letter, index + 1))
+            .collect();
+
+        // load the file of names
+        let file = File::open("./0022_names.txt").unwrap();
+        let reader = io::BufReader::new(file);
+        let names = reader.lines().next().unwrap().unwrap();
+
+        //parse the names into a vector
+        let mut names_list: Vec<String> = names.split(",")
+            .map(|s| s.trim_matches('"').to_string())
+            .collect();
+
+        //sort into alphabetical order
+        names_list.sort();
+
+        //following the problems rules, sum the scores
+        let sum: usize = names_list.iter().enumerate().map(|(index, name)| {
+            let base_score = index + 1;
+            let letters_score: usize = name.chars()
+                .map(|c| letter_map.get(&c).unwrap())
+                .sum();
+            base_score * letters_score
+        }).sum();
+
+        println!("sum: {sum}");
+
+    }
+
     #[test]
     fn problem_21_amicable_numbers() {
         fn proper_divisors_sum(n: u32) -> u32 {
