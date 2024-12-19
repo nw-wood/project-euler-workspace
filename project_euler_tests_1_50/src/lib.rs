@@ -1,6 +1,22 @@
 #[cfg(test)]
 mod project_euler_tests_1_50 {
     #[test]
+    fn problem_20_factorial_digit_sum() {
+        
+        use num_bigint::BigUint;
+
+        let fact_n = (1..=100usize).fold(BigUint::from(1usize), |acc, x| acc * x);
+
+        let digit_sum: u32 = fact_n.to_string()
+            .chars()
+            .filter_map(|char| char.to_digit(10))
+            .sum();
+
+        println!("{}", digit_sum);
+    }
+
+
+    #[test]
     fn problem_19_counting_sundays() {
 
         let mut day = 2; //0 sunday, 1 monday, 2 tuesday, jan 1 1901 is a tuesday
