@@ -1,6 +1,26 @@
 #[cfg(test)]
 mod project_euler_tests_1_50 {
     #[test]
+    fn problem_21_amicable_numbers() {
+        fn proper_divisors_sum(n: u32) -> u32 {
+            (1..=n / 2).filter(|&i| n % i == 0).sum()
+        }
+        let mut amicable_numbers = Vec::new();
+        for n in 1..10000 {
+            if amicable_numbers.contains(&n) {
+                continue;
+            }
+            let div_sum = proper_divisors_sum(n);
+            if div_sum != n && proper_divisors_sum(div_sum) == n {
+                amicable_numbers.push(n);
+                amicable_numbers.push(div_sum);
+            }
+        }
+        let amicable_sum: u32 = amicable_numbers.iter().sum();
+        println!("amicable_sum: {}", amicable_sum);
+    }
+
+    #[test]
     fn problem_20_factorial_digit_sum() {
         
         use num_bigint::BigUint;
